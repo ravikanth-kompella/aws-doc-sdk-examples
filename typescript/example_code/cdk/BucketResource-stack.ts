@@ -2,13 +2,13 @@
 // snippet-comment:[This goes in the lib dir.]
 // snippet-comment:[This is a full sample when you include BucketResource.ts, which goes in the bin dir.]
 // snippet-sourceauthor:[Doug-AWS]
-// snippet-sourcedescription:[HelloCdk-stack.ts creates a stack with an S3 bucket that has replication.]
-// snippet-keyword:[CDK V0.27.0]
+// snippet-sourcedescription:[HelloCdk-stack.ts creates a stack with S3 bucket overrides.]
+// snippet-keyword:[CDK V0.28.0]
 // snippet-keyword:[TypeScript]
 // snippet-service:[cdk]
 // snippet-keyword:[Code Sample]
 // snippet-sourcetype:[full-example]
-// snippet-sourcedate:[2019-4-3]
+// snippet-sourcedate:[2019-4-18]
 // Copyright 2010-2019 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 //
 // This file is licensed under the Apache License, Version 2.0 (the "License").
@@ -34,6 +34,7 @@ export class BucketResourceStack extends cdk.Stack {
     // For details on the format of ReplicationConfiguration, see:
     //   https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-s3-bucket-replicationconfiguration.html
 
+    // snippet-start:[cdk.typescript.BucketResource-stack.create_role]
     // Create an IAM role that Amazon S3 assumes when replicating objects.
     // The role must contain two policies:
     //   a trust policy that identify Amazon S3 as the service principal who can assume the role
@@ -84,12 +85,15 @@ export class BucketResourceStack extends cdk.Stack {
 
     role.attachInlinePolicy(trustPolicy);
     role.attachInlinePolicy(accessPolicy);
+    // snippet-end:[cdk.typescript.BucketResource-stack.create_role]
 
+    // snippet-start:[cdk.typescript.BucketResource-stack.create_cfnbucket]
     // Now a low-level S3 bucket
     const bucketResource = new s3.CfnBucket(this, "MyCfnBucket");
 
     // Get name of bucket to which we replicate from config file:
     const bucketName = this.node.getContext("bucketName");
+    // snippet-end:[cdk.typescript.BucketResource-stack.create_cfnbucket]
 
     // snippet-start:[cdk.typescript.BucketResource-stack.replication_configuration]
     bucketResource.addPropertyOverride("ReplicationConfiguration", {
@@ -121,6 +125,8 @@ export class BucketResourceStack extends cdk.Stack {
       }
     });
     // snippet-end:[cdk.typescript.BucketResource-stack.analytics-configurations]
+
+    // Create new low-level bucket with
   }
 }
 // snippet-end:[cdk.typescript.BucketResource-stack]
